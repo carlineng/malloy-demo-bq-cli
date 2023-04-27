@@ -36,6 +36,11 @@ export function run(
 function getOptions(args: string[]) {
   let query: malloy.QueryURL | malloy.QueryString | undefined;
   let model: malloy.ModelURL | malloy.ModelString | undefined;
+
+  if(args.length >= 2) {
+    args = args.slice(2)
+  }
+
   while (args.length >= 2) {
     const [option, value] = args;
     args = args.slice(2);
