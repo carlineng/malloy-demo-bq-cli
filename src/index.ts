@@ -31,12 +31,31 @@ export function run(
     ? runtime.loadModel(model).loadQuery(query)
     : runtime.loadQuery(query);
 
+  // What's the difference between these two? Model vs ModelMaterializer?
+  runtime.getModel('modelURL')
+  runtime.loadModel('modelURL)')
+
   const modelMaterializer = runtime.loadModel(model);
+  const malloyModelPromise = modelMaterializer.getModel() // Promise<malloy.Model>
+  malloyModelPromise.then((malloyModel) => {
+    malloyModel
+  })
+
+  modelMaterializer.getModel().then( (model) => {
+    const explore = model.getExploreByName('exploreName'); // malloy.Explore
+    
+  })
+  modelMaterializer.getQueryByName('queryName') // Promise<malloy.PreparedQuery>
+  modelMaterializer.loadQuery('queryString') // malloy.QueryMaterializer
+
 
   const queryMaterializer2 = runtime.loadQuery(query);
 
   const sqlString = queryMaterializer2.getSQL() // Promise<string>
   const preparedQuery = queryMaterializer2.getPreparedQuery() // Promise<malloy.preparedQuery>
+  preparedQuery.then((preparedQuery) => {
+    preparedQuery
+  })
   const preparedResult = queryMaterializer2.getPreparedResult() // Promise<malloy.preparedResult>
   const preparedResultMaterializer = queryMaterializer2.loadPreparedResult() // malloy.PreparedResultMaterializer
   const result = queryMaterializer2.run() // Promise<malloy.Result>
