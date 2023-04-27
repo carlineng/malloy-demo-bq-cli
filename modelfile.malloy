@@ -1,0 +1,1 @@
+source: flights is table('malloy-data.faa.flights')

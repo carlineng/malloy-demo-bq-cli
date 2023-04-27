@@ -30,6 +30,18 @@ export function run(
   const queryMaterializer = model
     ? runtime.loadModel(model).loadQuery(query)
     : runtime.loadQuery(query);
+
+  const modelMaterializer = runtime.loadModel(model);
+
+  const queryMaterializer2 = runtime.loadQuery(query);
+
+  const sqlString = queryMaterializer2.getSQL() // Promise<string>
+  const preparedQuery = queryMaterializer2.getPreparedQuery() // Promise<malloy.preparedQuery>
+  const preparedResult = queryMaterializer2.getPreparedResult() // Promise<malloy.preparedResult>
+  const preparedResultMaterializer = queryMaterializer2.loadPreparedResult() // malloy.PreparedResultMaterializer
+  const result = queryMaterializer2.run() // Promise<malloy.Result>
+  const dataStream = queryMaterializer2.runStream() // AsyncIterableIterator<malloy.DataRecord>
+
   return queryMaterializer.run();
 }
 
