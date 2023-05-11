@@ -28,10 +28,71 @@ export function run(
   const runtime = new malloy.Runtime(files, connection);
 
   const { query, model } = getOptions(args);
+
+  // Current way to load a model and a query:
   const queryMaterializer = model
     ? runtime.loadModel(model).loadQuery(query)
     : runtime.loadQuery(query);
+
   return queryMaterializer.run();
+
+  // Rename "runtime" to "malloy"?
+  // Why do we need ModelMaterializer and QueryMaterializer? Can it just be Model and Query in the API?
+
+  // Would want to do something like this:
+  // import { Malloy } from "@malloydata/malloy";
+  // const malloy = new Malloy(files, connection)
+  // const model = modelName ? malloy.loadModel(modelName) : undefined;
+  // const query = model ? model.loadNamedQuery(queryString) : malloy.loadQueryString(queryString);
+  // const result = query.run();
+
+  // Other methods:
+
+  // Run a query from a model:
+  // const query = model.loadQueryString(`
+  //  flights -> {
+  //    group_by: tail_num
+  //    aggregate: flight_count is count()
+  //  }`)
+  // const result = query.run()
+
+  // Load a source from the model, run a named query on that source:
+  // const source = model.getSourceByName('sourceName')
+  // const namedQuery = source.loadNamedQuery('queryName')
+  // const result = namedQuery.run()
+
+  // Load a source from the model. Maybe support some kind of QueryBuilder syntax directly on the source object?
+  // const source = model.getSourceByName('sourceName')
+  // const query = source.groupBy('col1', 'col2').aggregate('flight_count', 'count()')
+  // const result = query.run()
+
+  // Add/update/remove measures, dimensions, filters, joins to a source.
+  // Is this by reference or value? Do these updates also update the model, or do we need to save it back to the model?
+  // const source = model.getSourceByName('sourceName')
+  // source.addMeasure('flight_count', 'count()')
+  // source.addDimension('tail_num_lower', 'lower(tail_num)')
+  // source.addFilter('tail_num_lower', '=', 'n12345')
+  // possibly: model.saveSource('sourceName', source)
+
+  // Read properties of the source:
+  // const dimensions: Dimension[] = source.getDimensions()
+  // const measures: Measure[] = source.getMeasures()
+  // const filters: Filter[] = source.getFilters()
+  // const joins: Join[] = source.getJoins()
+
+  // Add/updated/remove group_by, aggregate, filter, join to a Named Query:
+  // const query = model.loadNamedQuery('queryName')
+  // query.groupBy('tail_num')
+  // query.aggregate('flight_count', 'count()')
+  // query.filter('tail_num', '=', 'n12345')
+
+  // Read properties of queries:
+  // const groupBys: string[] = query.getGroupBys()
+  // const aggregates: Aggregate[] = query.getAggregates()
+  // const filters: Filter[] = query.getFilters()
+  // const joins: Join[] = query.getJoins()
+  // const limit: number | undefined = query.getLimit()
+  // const orderBy: OrderBy[] = query.getOrderBy()
 }
 
 function getOptions(args: string[]) {
