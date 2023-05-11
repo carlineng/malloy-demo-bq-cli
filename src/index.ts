@@ -14,7 +14,7 @@
 import * as malloy from "@malloydata/malloy";
 import { promises as fs } from "fs";
 import * as path from "path";
-import { BigQueryConnection } from "@malloydata/db-bigquery";
+import { DuckDBConnection } from "@malloydata/db-duckdb";
 
 export function pathToURL(filePath: string): URL {
   return new URL("file://" + path.resolve(filePath));
@@ -24,8 +24,9 @@ export function run(
   files: malloy.URLReader,
   args: string[]
 ): Promise<malloy.Result> {
-  const connection = new BigQueryConnection("bigquery");
+  const connection = new DuckDBConnection("duckdb");
   const runtime = new malloy.Runtime(files, connection);
+
   const { query, model } = getOptions(args);
   const queryMaterializer = model
     ? runtime.loadModel(model).loadQuery(query)
